@@ -8,8 +8,16 @@ const registerUser = async (req, res) => {
     const user = new User({name,password,email});
     await user.save();
     const token = createToken({name:user.name,id:user._id});
+
+    res.cookie('token',token,{
+      httpOnly:true,
+      maxAge:1000*60*15,
+      sameSite:'Strict'
+    });
     // console.log("inside userController token: ", token);
     // console.log(createToken({name:user.email,id:user._id}));
+
+
     res.status(201).json({ message: 'User registered successfully', user ,"token":token});
   } catch (err) {
     if (err.name === 'ValidationError') {

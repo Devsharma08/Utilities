@@ -21,7 +21,7 @@ app.post('/login',LoginAuthenticate,async (req,res)=>{
 })
 
 app.get('/jwt',compareToken,(req,res)=>{
-  res.send('hello after the verification');
+  res.send({"msg":'hello after the verification',"userInfo":req.user});
 })
 app.use('/api/v1/auth', userRouter);
 

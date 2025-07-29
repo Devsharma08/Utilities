@@ -7,18 +7,30 @@ const createToken = ({ name, id: userId }) => {
   return token;
 };
 
-const compareToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+const compareToken = (req, res, next) => {
+  let token = null;
+
+  // Prefer cookie token first
+  if (req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  } 
+  // Then check Authorization header
+  else if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  // If no token found
+  if (!token) {
     return res.status(401).json({ error: 'Unauthorized: No token provided' });
   }
 
-  const token = authHeader.split(' ')[1];
-
   try {
-    const payload = jwt.verify(token, 'secret-code');
-    req.user = payload;
+    const payload = jwt.verify(token, process.env.JWT_SECRET || 'secret-code');
+    req.user = payload; // attach user info
     next();
   } catch (err) {
     return res.status(401).json({ error: 'Unauthorized: Invalid token' });
