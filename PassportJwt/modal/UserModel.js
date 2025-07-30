@@ -1,6 +1,7 @@
+require('dotenv').config();
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb+srv://DevSharma:IAmDev@cluster0.44z6irx.mongodb.net/PassportLocal?retryWrites=true&w=majority&appName=Cluster0');
+mongoose.connect(process.env.MONGO_URL);
 
 const UserSchema = mongoose.Schema({
   name:String,

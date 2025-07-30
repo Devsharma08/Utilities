@@ -1,7 +1,7 @@
 const express = require('express')
 const passport = require('./modal/authenticate')
 const app = express();
-
+require('dotenv').config()
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 app.set('view engine', 'ejs');
@@ -17,7 +17,7 @@ app.use(session({
     maxAge:1000*60*1 // 1 min
    },
    store:MongoStore.create({
-    mongoUrl:"mongodb+srv://DevSharma:IAmDev@cluster0.44z6irx.mongodb.net/Passport-Google?retryWrites=true&w=majority&appName=Cluster0",
+    mongoUrl:process.env.MONGO_URL,
     collectionName:"Passport-Google"
 
    })
